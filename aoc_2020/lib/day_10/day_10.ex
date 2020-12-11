@@ -4,7 +4,6 @@ defmodule Aoc2020.Day10 do
          |> String.split("\n")
          |> Enum.map(&String.to_integer/1)
          |> Enum.sort()
-         |> IO.inspect()
 
   def part_one() do
     @input
