@@ -5,7 +5,7 @@ end
 
 defmodule Aoc2020.Day18 do
   import Kernel, except: [++: 2, -: 2]
-  import CustomOperators
+  import CustomOperators, warn: false
 
   @input "lib/day_18/input.txt"
          |> File.read!()
