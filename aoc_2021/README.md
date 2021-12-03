@@ -1,21 +1,5 @@
 # Aoc2021
 
-**TODO: Add description**
+This is the code for my solutions to [Advent of Code 2021](https://adventofcode.com/2021). 
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `aoc_2021` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:aoc_2021, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/aoc_2021](https://hexdocs.pm/aoc_2021).
-
+I am also recording/streaming the solutions, which will be available here: https://www.youtube.com/playlist?list=PLZdi8gYWndC3kV0Gw39uXQvNB60fhoaxt
