@@ -1,14 +1,8 @@
 defmodule Aoc2021.Day1 do
-  def example_input do
-    "lib/day_1/example_input.txt"
-    |> File.read!()
-    |> String.split("\n")
-    |> Enum.map(&String.to_integer/1)
-  end
+  use Aoc2021
 
-  def input do
-    "lib/day_1/input.txt"
-    |> File.read!()
+  def handle_input(input) do
+    input
     |> String.split("\n")
     |> Enum.map(&String.to_integer/1)
   end
