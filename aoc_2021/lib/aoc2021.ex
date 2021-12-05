@@ -1,5 +1,5 @@
 defmodule Aoc2021 do
-  @callback handle_input(String.t()) :: term
+  @callback handle_input(input :: String.t()) :: term
 
   defmacro __using__(_opts) do
     quote do
