@@ -13,14 +13,13 @@ defmodule Aoc2021.Day12 do
     end)
   end
 
-  defmodule TaskManager do
+  defmodule EndpointReachCounter do
     use Agent
 
-    def start_link(ref) do
+    def start_link() do
       Agent.start_link(
         fn ->
           %{
-            tasks: [ref],
             endpoint_reaching_tasks: 0
           }
         end,
@@ -32,65 +31,21 @@ defmodule Aoc2021.Day12 do
       Agent.stop(__MODULE__)
     end
 
-    def register_task(ref) do
+    def reached_endpoint() do
       Agent.update(
         __MODULE__,
         fn state ->
-          count = Enum.count(state.tasks) + 1
-
-          if rem(count, 1000) == 0 do
-            IO.inspect(count)
-          end
-
-          %{state | tasks: [ref | state.tasks]}
-        end,
-        :infinity
-      )
-    end
-
-    def deregister_task(ref, reached_endpoint?) do
-      Agent.update(
-        __MODULE__,
-        fn state ->
-          new_endpoint_reaching_tasks =
-            if reached_endpoint? do
-              state.endpoint_reaching_tasks + 1
-            else
-              state.endpoint_reaching_tasks
-            end
-
-          count = Enum.count(state.tasks) - 1
-
-          if rem(count, 1000) == 0 do
-            IO.inspect(count)
-          end
-
           %{
             state
-            | tasks: state.tasks -- [ref],
-              endpoint_reaching_tasks: new_endpoint_reaching_tasks
+            | endpoint_reaching_tasks: state.endpoint_reaching_tasks + 1
           }
         end,
         :infinity
       )
     end
 
-    def wait_for_all_tasks() do
-      {remaining_tasks?, endpoint_reaching_tasks} =
-        Agent.get(
-          __MODULE__,
-          fn state ->
-            {!Enum.empty?(state.tasks), state.endpoint_reaching_tasks}
-          end,
-          :infinity
-        )
-
-      if remaining_tasks? do
-        :timer.sleep(10)
-        wait_for_all_tasks()
-      else
-        endpoint_reaching_tasks
-      end
+    def get_count() do
+      Agent.get(__MODULE__, fn state -> state.endpoint_reaching_tasks end)
     end
   end
 
@@ -111,36 +66,32 @@ defmodule Aoc2021.Day12 do
   end
 
   defp count_unique_paths(map, allow_one_small_cave_revisit? \\ false) do
-    ref = make_ref()
-    TaskManager.start_link(ref)
+    EndpointReachCounter.start_link()
 
     count_paths_to_end(
       "start",
       map,
-      ref,
       %{
         trail: [],
         one_small_cave_revisited?: !allow_one_small_cave_revisit?
       }
     )
 
-    TaskManager.wait_for_all_tasks()
+    EndpointReachCounter.get_count()
   after
-    TaskManager.stop()
+    EndpointReachCounter.stop()
   end
 
-  defp count_paths_to_end("end", _map, ref, _history) do
-    # IO.inspect("#{trail_to_string(%{history | trail: history.trail ++ ["end"]})} reached the end")
-    TaskManager.deregister_task(ref, true)
+  defp count_paths_to_end("end", _map, _history) do
+    EndpointReachCounter.reached_endpoint()
+    :ok
   end
 
-  defp count_paths_to_end(location, map, ref, history) do
+  defp count_paths_to_end(location, map, history) do
     revisiting_small_cave? = String.downcase(location) == location && location in history.trail
 
     if revisiting_small_cave? && (history.one_small_cave_revisited? || location == "start") do
-      # IO.inspect("#{trail_to_string(history)} reached a duplicate cave #{location}")
-
-      TaskManager.deregister_task(ref, false)
+      :ok
     else
       new_history = %{
         history
@@ -151,15 +102,8 @@ defmodule Aoc2021.Day12 do
       map
       |> Map.get(location, [])
       |> Enum.each(fn next_location ->
-        ref = make_ref()
-        TaskManager.register_task(ref)
-
-        spawn(fn ->
-          count_paths_to_end(next_location, map, ref, new_history)
-        end)
+        count_paths_to_end(next_location, map, new_history)
       end)
-
-      TaskManager.deregister_task(ref, false)
     end
   end
 
