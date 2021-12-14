@@ -90,15 +90,15 @@ defmodule Aoc2021.Day4 do
     sum_of_all_unchecked_squares * number_being_called
   end
 
-  defp print_board(board) do
-    0..4
-    |> Enum.map_join("\n", fn row_number ->
-      Enum.map_join(0..4, " ", fn col_number ->
-        board[{row_number, col_number}].value
-      end)
-    end)
-    |> IO.puts()
-  end
+  # defp print_board(board) do
+  #   0..4
+  #   |> Enum.map_join("\n", fn row_number ->
+  #     Enum.map_join(0..4, " ", fn col_number ->
+  #       board[{row_number, col_number}].value
+  #     end)
+  #   end)
+  #   |> IO.puts()
+  # end
 
   defp winning_board?(board) do
     Enum.find_value(0..4, fn row_or_column ->
