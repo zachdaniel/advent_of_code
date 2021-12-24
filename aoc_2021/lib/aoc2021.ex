@@ -25,17 +25,41 @@ defmodule Aoc2021 do
       end
 
       def part_2_example_input() do
+        part_2_file =
+          __ENV__.file
+          |> Path.dirname()
+          |> Path.join("part_2_example_input.txt")
+
+        file =
+          if File.exists?(part_2_file) do
+            "part_2_example_input.txt"
+          else
+            "input.txt"
+          end
+
         __ENV__.file
         |> Path.dirname()
-        |> Path.join("example_input.txt")
+        |> Path.join(file)
         |> File.read!()
         |> handle_part_2_input()
       end
 
       def part_2_input() do
+        part_2_file =
+          __ENV__.file
+          |> Path.dirname()
+          |> Path.join("part_2_input.txt")
+
+        file =
+          if File.exists?(part_2_file) do
+            "part_2_input.txt"
+          else
+            "input.txt"
+          end
+
         __ENV__.file
         |> Path.dirname()
-        |> Path.join("input.txt")
+        |> Path.join(file)
         |> File.read!()
         |> handle_part_2_input()
       end
